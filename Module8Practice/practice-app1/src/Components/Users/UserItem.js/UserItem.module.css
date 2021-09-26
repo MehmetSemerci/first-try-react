@@ -1,0 +1,9 @@
+.user-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem;
+	margin: 1rem auto;
+	background-color: #e67575;
+    max-width: 50rem;
+}
