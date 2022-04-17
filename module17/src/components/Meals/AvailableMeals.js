@@ -1,52 +1,56 @@
+import React from 'react';
 import Card from '../UI/Card';
 import MealItem from './MealItem/MealItem';
 import classes from './AvailableMeals.module.css';
-
-const DUMMY_MEALS = [
-  {
-    id: 'm1',
-    name: 'Sushi',
-    description: 'Finest fish and veggies',
-    price: 22.99,
-  },
-  {
-    id: 'm2',
-    name: 'Schnitzel',
-    description: 'A german specialty!',
-    price: 16.5,
-  },
-  {
-    id: 'm3',
-    name: 'Barbecue Burger',
-    description: 'American, raw, meaty',
-    price: 12.99,
-  },
-  {
-    id: 'm4',
-    name: 'Green Bowl',
-    description: 'Healthy...and green...',
-    price: 18.99,
-  },
-];
+import { useEffect, useState } from 'react';
+import { CircularProgress } from '@mui/material';
 
 const AvailableMeals = () => {
-  const mealsList = DUMMY_MEALS.map((meal) => (
-    <MealItem
-      key={meal.id}
-      id={meal.id}
-      name={meal.name}
-      description={meal.description}
-      price={meal.price}
-    />
-  ));
+	const [isFetchCompleted, setIsFetchCompleted] = useState(false);
+	const [meals, setMeals] = useState([]);
+	const [mealsList, setMealList] = useState([]);
+	const [isError, setIsError] = useState(false);
+	useEffect(() => {
+		fetch(
+			'https://dev-project-mse-default-rtdb.europe-west1.firebasedatabase.app/meals.json'
+		)
+			.then((response) => response.json())
+			.then((data) => {
+				setMeals(data);
+				setIsFetchCompleted(true);
+			})
+			.catch((error) => {
+				setIsError(true);
+			});
+	}, []);
 
-  return (
-    <section className={classes.meals}>
-      <Card>
-        <ul>{mealsList}</ul>
-      </Card>
-    </section>
-  );
+	useEffect(() => {
+		if (isFetchCompleted) {
+			setMealList(
+				Object.keys(meals).map((meal) => (
+					<MealItem
+						key={meal}
+						id={meal}
+						name={meals[meal].name}
+						description={meals[meal].description}
+						price={meals[meal].price}
+					/>
+				))
+			);
+		}
+	}, [isFetchCompleted]);
+
+	return (
+		<section className={classes.meals}>
+			{!isFetchCompleted && <CircularProgress />}
+			{isFetchCompleted && (
+				<Card>
+					<ul>{mealsList}</ul>
+				</Card>
+			)}
+			{isError && 'There was an error try again'}
+		</section>
+	);
 };
 
 export default AvailableMeals;
