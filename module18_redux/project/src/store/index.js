@@ -1,35 +1,13 @@
-import { createStore } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 
-const initialState = {
-	counter: 0,
-	showCounter: true,
-};
+import counterSlice from './counter-slice';
+import authSlice from './auth-slice';
 
-const counterReducer = (state = initialState, action) => {
-	if (action.type === 'INCR') {
-		return {
-			...state,
-			counter: state.counter + Number(action.value),
-		};
-	}
+const store = configureStore({
+	reducer: { counter: counterSlice.reducer, auth: authSlice.reducer },
+});
 
-	if (action.type === 'DECR') {
-		return {
-			...state,
-			counter: state.counter - Number(action.value),
-		};
-	}
-
-	if (action.type === 'TOOGLE_VISIBLE') {
-		return {
-			...state,
-			showCounter: !state.showCounter,
-		};
-	}
-
-	return state;
-};
-
-const store = createStore(counterReducer);
+export const counterActions = counterSlice.actions;
+export const authActions = authSlice.actions;
 
 export default store;

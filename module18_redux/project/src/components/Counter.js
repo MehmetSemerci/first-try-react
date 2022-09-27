@@ -1,17 +1,18 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 
+import { counterActions } from '../store/index.js';
 import classes from './Counter.module.css';
 
 const Counter = () => {
 	const dispatch = useDispatch();
-	const counter = useSelector((state) => state.counter);
-	const showCounter = useSelector((state) => state.showCounter);
+	const counter = useSelector((state) => state.counter.counter);
+	const showCounter = useSelector((state) => state.counter.showCounter);
 
 	const [quantity, setQuantity] = useState(1);
 
 	const toggleCounterHandler = () => {
-		dispatch({ type: 'TOOGLE_VISIBLE' });
+		dispatch(counterActions.toggleVisibility());
 	};
 
 	const inputChangeHandler = (event) => {
@@ -19,11 +20,11 @@ const Counter = () => {
 	};
 
 	const incrementHandler = () => {
-		dispatch({ type: 'INCR', value: quantity });
+		dispatch(counterActions.increment({ value: quantity }));
 	};
 
 	const decrementHandle = () => {
-		dispatch({ type: 'DECR', value: quantity });
+		dispatch(counterActions.decrement({ value: quantity }));
 	};
 
 	return (
